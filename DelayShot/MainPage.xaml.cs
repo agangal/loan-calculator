@@ -22,7 +22,7 @@ namespace DelayShot
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private double interestRate = 0.0359;
+        private double rate = 0.0359;
         private ulong nMonth = 60;
         private double principal = 19976.15;
         private double mInt;
@@ -30,7 +30,7 @@ namespace DelayShot
         public MainPage()
         {
             this.InitializeComponent();
-            this.mInt = interestRate / 12;
+            this.mInt = rate / 12;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -47,6 +47,11 @@ namespace DelayShot
             return principal * (mInt * Math.Pow(1 + mInt, nMonth)) / (Math.Pow(1 + mInt, nMonth) - 1);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cMonth">Completed Months</param>
+        /// <returns></returns>
         private double GetRemainingLoanBalance(int cMonth)
         {
             return principal * (Math.Pow(1 + mInt, nMonth) - Math.Pow(1 + mInt, cMonth)) / (Math.Pow(1 + mInt, nMonth) - 1);
@@ -57,11 +62,37 @@ namespace DelayShot
             return mInt * balance;
         }
 
-        private double GetTotalRemainingInterest(double balance)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="balance"></param>
+        /// <param name="rMonth">Remaining months</param>
+        /// <returns></returns>
+        private double GetTotalRemainingInterest(double balance, int rMonth)
         {
-
+            return rate * balance / (1 - (1 / Math.Pow(1 + rate, rMonth)));
         }
 
         #endregion
+    }
+
+    public class Loan
+    {
+        public double Rate { get; set; }
+        public double PeriodRate { get; set; }
+    }
+
+    public class Payment
+    {
+        public double Principal { get; set; }
+        public double Interest { get; set; }
+        public double TotalPayment { get { return this.Principal + this.Interest; } }
+    }
+
+    public enum PayPeriod
+    {
+        Monthly,
+        BiWeekly,
+        Quarterly
     }
 }
