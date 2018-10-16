@@ -22,9 +22,46 @@ namespace DelayShot
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        private double interestRate = 0.0359;
+        private ulong nMonth = 60;
+        private double principal = 19976.15;
+        private double mInt;
+
         public MainPage()
         {
             this.InitializeComponent();
+            this.mInt = interestRate / 12;
         }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            var monthlyPayment = this.GetMonthlyPayment();
+            System.Diagnostics.Debug.WriteLine(monthlyPayment);
+        }
+
+        #region Math
+
+        private double GetMonthlyPayment()
+        {
+            return principal * (mInt * Math.Pow(1 + mInt, nMonth)) / (Math.Pow(1 + mInt, nMonth) - 1);
+        }
+
+        private double GetRemainingLoanBalance(int cMonth)
+        {
+            return principal * (Math.Pow(1 + mInt, nMonth) - Math.Pow(1 + mInt, cMonth)) / (Math.Pow(1 + mInt, nMonth) - 1);
+        }
+
+        private double GetInterestForMonth(double balance)
+        {
+            return mInt * balance;
+        }
+
+        private double GetTotalRemainingInterest(double balance)
+        {
+
+        }
+
+        #endregion
     }
 }
