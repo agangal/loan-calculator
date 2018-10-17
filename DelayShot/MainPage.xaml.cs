@@ -23,7 +23,7 @@ namespace DelayShot
     public sealed partial class MainPage : Page
     {
         private double rate = 0.0359;
-        private ulong nMonth = 60;
+        private int nMonth = 60;
         private double principal = 19976.15;
         private double mInt;
 
@@ -36,49 +36,62 @@ namespace DelayShot
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            var monthlyPayment = this.GetMonthlyPayment();
-            System.Diagnostics.Debug.WriteLine(monthlyPayment);
+            Loan loan = new Loan(rate, nMonth, principal);
+            System.Diagnostics.Debug.WriteLine(loan.ExpectedPayments.Count);
         }
-
-        #region Math
-
-        
-
-        #endregion
     }
 
     public class Loan
     {
         public double Rate { get; set; }
-        public PayPeriod Period { get; set; }
-        private double PeriodRate { get; set; }
+        public double PeriodRate { get; set; }
         public double Principal { get; set; }
         public double RemainingInterest { get; set; }
-        public double RemainingPrincipal { get; set; }
-        public double ComputedMonthlyPayment { get; set; }
+        public double Balance { get; set; }
+        public double ComputedPeriodicPayment { get; set; }
         public double WantedMonthlyPayment { get; set; }
-        public long NumPeriods { get; set; }
+        public int NumPeriods { get; set; }
         public double WantedNumPeriods { get; set; }
-        public List<Payment> Payments { get; set; }
+        public List<Payment> ExpectedPayments { get; set; }
+        public List<Payment> ActualPayments { get; set; }
 
-        public Loan(double rate, long numPeriods, long principal, PayPeriod period)
+        public Loan(double rate, int numPeriods, double principal)
         {
             this.Rate = rate;
             this.NumPeriods = numPeriods;
             this.Principal = principal;
-            this.Period = period;
-            if (this.Period == PayPeriod.Quarterly)
-            {
-                this.PeriodRate = this.Rate / 4;
-            }
-            else
-            {
-                this.PeriodRate = this.Rate / 12;
-            }
-            this.ComputedMonthlyPayment = this.GetMonthlyPayment();
+            this.ExpectedPayments = new List<Payment>();
+            this.ActualPayments = new List<Payment>();
+            this.ComputeBasic();
         }
 
-        private double GetMonthlyPayment()
+        public void ComputeBasic()
+        {
+            this.Balance = this.Principal;                              // In the beginning, the balance is the same as the principal
+            this.PeriodRate = this.Rate / 12;            
+            this.ComputedPeriodicPayment = this.GetPeriodicPayment();
+            this.GeneratePeriodicPayments();
+        }
+
+        public void GeneratePeriodicPayments()
+        {
+            for(int i = 0; i < this.NumPeriods; i++)
+            {
+                double interest = this.GetInterestForMonth(this.Balance);
+                double principalPaid = this.ComputedPeriodicPayment - interest;
+                Payment payment = new Payment(principalPaid, interest);
+                this.Balance = this.Balance - principalPaid;
+                this.ExpectedPayments.Add(payment);
+                if (this.Balance == 0)
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Compute monthly payment
+        /// </summary>
+        /// <returns></returns>
+        private double GetPeriodicPayment()
         {
             return this.Principal 
                 * (this.PeriodRate * Math.Pow(1 + this.PeriodRate, this.NumPeriods)) 
@@ -114,18 +127,14 @@ namespace DelayShot
 
     public class Payment
     {
-        public double Principal { get; set; }
-        public double Interest { get; set; }
-        public double TotalSinglePayment { get { return this.Principal + this.Interest; } }
-        public double LoanRemainingInterest { get; set; }
-        public double LoanRemainingPrinciple { get; set; }
-        public double TotalLoanPrinciplePaid { get; set; }
-        public double TotalLoanInterestPaid { get; set; }
-    }
+        public double PrincipalPaid { get; set; }
+        public double InterestPaid { get; set; }
+        public double TotalSinglePayment { get { return this.PrincipalPaid + this.InterestPaid; } }        
 
-    public enum PayPeriod
-    {
-        Monthly,
-        Quarterly
+        public Payment(double principalPaid, double interestPaid)
+        {
+            this.PrincipalPaid = principalPaid;
+            this.InterestPaid = interestPaid;
+        }
     }
 }
