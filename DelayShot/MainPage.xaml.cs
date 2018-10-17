@@ -42,9 +42,47 @@ namespace DelayShot
 
         #region Math
 
+        
+
+        #endregion
+    }
+
+    public class Loan
+    {
+        public double Rate { get; set; }
+        public PayPeriod Period { get; set; }
+        private double PeriodRate { get; set; }
+        public double Principal { get; set; }
+        public double RemainingInterest { get; set; }
+        public double RemainingPrincipal { get; set; }
+        public double ComputedMonthlyPayment { get; set; }
+        public double WantedMonthlyPayment { get; set; }
+        public long NumPeriods { get; set; }
+        public double WantedNumPeriods { get; set; }
+        public List<Payment> Payments { get; set; }
+
+        public Loan(double rate, long numPeriods, long principal, PayPeriod period)
+        {
+            this.Rate = rate;
+            this.NumPeriods = numPeriods;
+            this.Principal = principal;
+            this.Period = period;
+            if (this.Period == PayPeriod.Quarterly)
+            {
+                this.PeriodRate = this.Rate / 4;
+            }
+            else
+            {
+                this.PeriodRate = this.Rate / 12;
+            }
+            this.ComputedMonthlyPayment = this.GetMonthlyPayment();
+        }
+
         private double GetMonthlyPayment()
         {
-            return principal * (mInt * Math.Pow(1 + mInt, nMonth)) / (Math.Pow(1 + mInt, nMonth) - 1);
+            return this.Principal 
+                * (this.PeriodRate * Math.Pow(1 + this.PeriodRate, this.NumPeriods)) 
+                / (Math.Pow(1 + this.PeriodRate, this.NumPeriods) - 1);
         }
 
         /// <summary>
@@ -54,12 +92,12 @@ namespace DelayShot
         /// <returns></returns>
         private double GetRemainingLoanBalance(int cMonth)
         {
-            return principal * (Math.Pow(1 + mInt, nMonth) - Math.Pow(1 + mInt, cMonth)) / (Math.Pow(1 + mInt, nMonth) - 1);
+            return this.Principal * (Math.Pow(1 + this.PeriodRate, this.NumPeriods) - Math.Pow(1 + this.PeriodRate, cMonth)) / (Math.Pow(1 + this.PeriodRate, this.NumPeriods) - 1);
         }
 
         private double GetInterestForMonth(double balance)
         {
-            return mInt * balance;
+            return this.PeriodRate * balance;
         }
 
         /// <summary>
@@ -70,29 +108,24 @@ namespace DelayShot
         /// <returns></returns>
         private double GetTotalRemainingInterest(double balance, int rMonth)
         {
-            return rate * balance / (1 - (1 / Math.Pow(1 + rate, rMonth)));
+            return this.Rate * balance / (1 - (1 / Math.Pow(1 + this.Rate, rMonth)));
         }
-
-        #endregion
-    }
-
-    public class Loan
-    {
-        public double Rate { get; set; }
-        public double PeriodRate { get; set; }
     }
 
     public class Payment
     {
         public double Principal { get; set; }
         public double Interest { get; set; }
-        public double TotalPayment { get { return this.Principal + this.Interest; } }
+        public double TotalSinglePayment { get { return this.Principal + this.Interest; } }
+        public double LoanRemainingInterest { get; set; }
+        public double LoanRemainingPrinciple { get; set; }
+        public double TotalLoanPrinciplePaid { get; set; }
+        public double TotalLoanInterestPaid { get; set; }
     }
 
     public enum PayPeriod
     {
         Monthly,
-        BiWeekly,
         Quarterly
     }
 }
