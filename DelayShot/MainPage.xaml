@@ -5,23 +5,44 @@
     xmlns:local="using:DelayShot"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:data="using:DelayShot"
     mc:Ignorable="d"
-    Background="Transparent">
+    Background="#1DE9B6">
 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <CaptureElement Name="CapturePreview" Stretch="Uniform" Grid.Row="0" Grid.RowSpan="3"></CaptureElement>
-        <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-           
+        <Grid Grid.Row="0">
+            <Button x:Name="AddNewLoan"
+                    HorizontalAlignment="Right"
+                    Height="35" Width="50"
+                    Background="Transparent"
+                    Content="Add"
+                    Foreground="White"
+                    Click="AddNewLoan_Click"></Button>
+        </Grid>
+        <StackPanel Grid.Row="1" Visibility="Visible" x:Name="AddLoanGrid">
+            <TextBlock Text="Principal"></TextBlock>
+            <TextBox></TextBox>
+            <TextBlock Text="APR"></TextBlock>
+            <TextBox></TextBox>
+        </StackPanel>
+        <Grid Grid.Row="2" Visibility="Collapsed" x:Name="LoanListGrid">
+            <ListView x:Name="LoansListView"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      IsItemClickEnabled="True"
+                      ItemsSource="{x:Bind Loans}"
+                      ItemClick="LoansListView_ItemClick">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="data:LoanItem">
+                        <TextBlock Text="{x:Bind Id}"></TextBlock>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </Grid>
     </Grid>
 </Page>

@@ -28,7 +28,7 @@ namespace DelayShot
 
         #region Public method to add/update loans
 
-        public int AddNewLoan(double rate, int numPeriods, double principal)
+        public LoanItem AddNewLoan(double rate, int numPeriods, double principal)
         {
             LoanItem loan = new LoanItem();            
             loan.Simulated = new Loan(rate, numPeriods, principal);
@@ -38,7 +38,7 @@ namespace DelayShot
             loanItemId++;
             Items.Add(loan);
             this.WriteToDB();
-            return loan.Id;
+            return loan;
         }
 
         public void RecordLoanPayment(double principal, double interest, int currPeriodNum, int loanId)
@@ -124,11 +124,12 @@ namespace DelayShot
 
     public class Loan
     {
+        private int precision = 2;
         public double Rate { get; set; }
         public double PeriodRate { get; set; }
         public double Principal { get; set; }
         public double TotalRemainingInterest { get; set; }
-        public double TotalExpectedInterest { get { return this.TotalRemainingInterest + this.TotalInterestPaid; } }
+        public double TotalExpectedInterest { get { return Math.Round(this.TotalRemainingInterest + this.TotalInterestPaid, precision, MidpointRounding.ToEven); } }
         public double OriginalExpectedInterest { get; set; }
         public double TotalInterestPaid { get; set; }
         public double SavingsOnInterest { get; set; }
@@ -167,9 +168,9 @@ namespace DelayShot
             {
                 double interest = this.GetInterestForMonth(this.Balance);
                 this.TotalInterestPaid += interest;
-                double principalPaid = Math.Round(this.ComputedPeriodicPayment - interest, 3, MidpointRounding.ToEven);
+                double principalPaid = Math.Round(this.ComputedPeriodicPayment - interest, precision, MidpointRounding.ToEven);
                 Payment payment = new Payment(principalPaid, interest);
-                this.Balance = Math.Round(this.Balance - principalPaid, 3, MidpointRounding.ToEven);
+                this.Balance = Math.Round(this.Balance - principalPaid, precision, MidpointRounding.ToEven);
                 payment.TotalInterestPaid = this.TotalInterestPaid;
                 payment.InterestRemainingAfterPayment = this.GetTotalRemainingInterest(this.Balance, this.NumPeriods - i - 1);
                 this.Payments.Add(payment);
@@ -197,7 +198,7 @@ namespace DelayShot
         {
             return Math.Round(principal
                 * (this.PeriodRate * Math.Pow(1 + this.PeriodRate, numPeriods))
-                / (Math.Pow(1 + this.PeriodRate, this.NumPeriods) - 1), 3, MidpointRounding.ToEven);
+                / (Math.Pow(1 + this.PeriodRate, this.NumPeriods) - 1), precision, MidpointRounding.ToEven);
         }
 
         ///// <summary>
@@ -240,7 +241,7 @@ namespace DelayShot
                 }
             }
 
-            return Math.Round(sum, 3, MidpointRounding.ToEven);
+            return Math.Round(sum, precision, MidpointRounding.ToEven);
         }
     }
 
