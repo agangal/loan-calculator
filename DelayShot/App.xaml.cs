@@ -22,6 +22,7 @@ namespace DelayShot
     /// </summary>
     sealed partial class App : Application
     {
+        public static DataProcessor Processor;
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -40,6 +41,7 @@ namespace DelayShot
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
             Frame rootFrame = Window.Current.Content as Frame;
+            Processor = new DataProcessor();
 
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
