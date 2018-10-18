@@ -23,8 +23,8 @@ namespace DelayShot
     public sealed partial class MainPage : Page
     {
         private double rate = 0.0359;
-        private int nMonth = 12;
-        private double principal = 19976;
+        private int nMonth = 60;
+        private double principal = 19976.15;
         private double mInt;
 
         public MainPage()
@@ -36,9 +36,24 @@ namespace DelayShot
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            Loan loan = new Loan(rate, nMonth, principal);
-            loan.GeneratePeriodicPayments();
-            System.Diagnostics.Debug.WriteLine(loan.Payments.Count);
+            LoanItem item = new LoanItem();
+            item.Simulated = new Loan(rate, nMonth, principal);   
+            item.Real = new Loan(rate, nMonth, principal);
+            item.Simulated.GeneratePeriodicPayments();
+            item.Real.AddNewPayment(895, 0, 0);
+            item.Real.AddNewPayment(0, 1, 0);
+            item.Real.AddNewPayment(0, 50, 0);
+            item.Real.AddNewPayment(345.61, 19.14, 1);
+            item.Real.AddNewPayment(498.16, 1.84, 1);
+            item.Real.AddNewPayment(494.62, 5.38, 1);
+            item.Real.AddNewPayment(500, 0, 2);
+            item.Real.AddNewPayment(0, 1, 2);
+            item.Real.AddNewPayment(999, 1, 2);
+            item.Real.AddNewPayment(999, 1, 2);
+            item.Real.AddNewPayment(999, 1, 2);
+            item.Real.AddNewPayment(3000, 1, 3);
+            item.Real.AddNewPayment(999, 1, 3);
+            item.Real.AddNewPayment(1999, 1, 3);
         }
     }
 
@@ -80,6 +95,7 @@ namespace DelayShot
             this.Balance = this.Balance - principal;
             payment.InterestRemainingAfterPayment = this.GetTotalRemainingInterest(this.Balance, this.NumPeriods - currPeriodNum);
             payment.TotalInterestPaid = this.TotalInterestPaid;
+            this.Payments.Add(payment);
         }
 
         public void GeneratePeriodicPayments()
@@ -92,9 +108,12 @@ namespace DelayShot
                 Payment payment = new Payment(principalPaid, interest);                
                 this.Balance = Math.Round(this.Balance - principalPaid, 3, MidpointRounding.ToEven);               
                 payment.TotalInterestPaid = this.TotalInterestPaid;
+                payment.InterestRemainingAfterPayment = this.GetTotalRemainingInterest(this.Balance, this.NumPeriods - i - 1);
                 this.Payments.Add(payment);
-                if (this.Balance == 0)
+                if (this.Balance < 1 )
+                {
                     break;
+                }                              
             }
         }
 
@@ -140,17 +159,23 @@ namespace DelayShot
         private double GetTotalRemainingInterest(double balance, int rMonth)
         {
             double sum = 0;
+            double interest = 0;
+            double principal = 0;
             for (int i = 0; i < rMonth; i++)
             {
-                sum += this.GetInterestForMonth(balance);
+                interest = this.GetInterestForMonth(balance);
+                principal = this.ComputedPeriodicPayment - interest;
+                sum += interest;
+                if (balance > principal)
+                    balance = balance - principal;
 
+                if (balance < 1)
+                {
+                    break;
+                }
             }
-            double interest = this.GetInterestForMonth(this.Balance);
-            this.TotalInterestPaid += interest;
-            double principalPaid = Math.Round(this.ComputedPeriodicPayment - interest, 3, MidpointRounding.ToEven);
-            Payment payment = new Payment(principalPaid, interest);
-            this.Balance = Math.Round(this.Balance - principalPaid, 3, MidpointRounding.ToEven);
-            payment.TotalInterestPaid = this.TotalInterestPaid;
+
+            return Math.Round(sum, 3, MidpointRounding.ToEven);
         }
     }
 
