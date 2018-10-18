@@ -23,8 +23,8 @@ namespace DelayShot
     public sealed partial class MainPage : Page
     {
         private double rate = 0.0359;
-        private int nMonth = 60;
-        private double principal = 19976.15;
+        private int nMonth = 12;
+        private double principal = 19976;
         private double mInt;
 
         public MainPage()
@@ -37,8 +37,15 @@ namespace DelayShot
         {
             base.OnNavigatedTo(e);
             Loan loan = new Loan(rate, nMonth, principal);
-            System.Diagnostics.Debug.WriteLine(loan.ExpectedPayments.Count);
+            loan.GeneratePeriodicPayments();
+            System.Diagnostics.Debug.WriteLine(loan.Payments.Count);
         }
+    }
+
+    public class LoanItem
+    {
+        public Loan Simulated { get; set; }
+        public Loan Real { get; set; }
     }
 
     public class Loan
@@ -46,56 +53,67 @@ namespace DelayShot
         public double Rate { get; set; }
         public double PeriodRate { get; set; }
         public double Principal { get; set; }
-        public double RemainingInterest { get; set; }
+        public double TotalExpectedInterest { get; set; }
+        public double TotalInterestPaid { get; set; }
         public double Balance { get; set; }
         public double ComputedPeriodicPayment { get; set; }
-        public double WantedMonthlyPayment { get; set; }
-        public int NumPeriods { get; set; }
-        public double WantedNumPeriods { get; set; }
-        public List<Payment> ExpectedPayments { get; set; }
-        public List<Payment> ActualPayments { get; set; }
-
+        public int NumPeriods { get; set; }       
+        public List<Payment> Payments { get; set; }
         public Loan(double rate, int numPeriods, double principal)
         {
             this.Rate = rate;
             this.NumPeriods = numPeriods;
             this.Principal = principal;
-            this.ExpectedPayments = new List<Payment>();
-            this.ActualPayments = new List<Payment>();
+            this.TotalExpectedInterest = 0;
+            this.TotalInterestPaid = 0;
+            this.Balance = 0;
+            this.ComputedPeriodicPayment = 0;
+            this.PeriodRate = 0;
+            this.Payments = new List<Payment>();
             this.ComputeBasic();
         }
 
-        public void ComputeBasic()
+        public void AddNewPayment(double principal, double interest, int currPeriodNum)
         {
-            this.Balance = this.Principal;                              // In the beginning, the balance is the same as the principal
-            this.PeriodRate = this.Rate / 12;            
-            this.ComputedPeriodicPayment = this.GetPeriodicPayment();
-            this.GeneratePeriodicPayments();
+            Payment payment = new Payment(principal, interest);
+            this.TotalInterestPaid += interest;
+            this.Balance = this.Balance - principal;
+            payment.InterestRemainingAfterPayment = this.GetTotalRemainingInterest(this.Balance, this.NumPeriods - currPeriodNum);
+            payment.TotalInterestPaid = this.TotalInterestPaid;
         }
 
         public void GeneratePeriodicPayments()
         {
-            for(int i = 0; i < this.NumPeriods; i++)
+            for (int i = 0; i < this.NumPeriods; i++)
             {
                 double interest = this.GetInterestForMonth(this.Balance);
-                double principalPaid = this.ComputedPeriodicPayment - interest;
-                Payment payment = new Payment(principalPaid, interest);
-                this.Balance = this.Balance - principalPaid;
-                this.ExpectedPayments.Add(payment);
+                this.TotalInterestPaid += interest;
+                double principalPaid = Math.Round(this.ComputedPeriodicPayment - interest, 3, MidpointRounding.ToEven);
+                Payment payment = new Payment(principalPaid, interest);                
+                this.Balance = Math.Round(this.Balance - principalPaid, 3, MidpointRounding.ToEven);               
+                payment.TotalInterestPaid = this.TotalInterestPaid;
+                this.Payments.Add(payment);
                 if (this.Balance == 0)
                     break;
             }
         }
 
+        private void ComputeBasic()
+        {
+            this.Balance = this.Principal;                              // In the beginning, the balance is the same as the principal
+            this.PeriodRate = this.Rate / 12;            
+            this.ComputedPeriodicPayment = this.GetPeriodicPayment(this.Principal, this.NumPeriods);           
+        }        
+
         /// <summary>
         /// Compute monthly payment
         /// </summary>
         /// <returns></returns>
-        private double GetPeriodicPayment()
+        private double GetPeriodicPayment(double principal, double numPeriods)
         {
-            return this.Principal 
-                * (this.PeriodRate * Math.Pow(1 + this.PeriodRate, this.NumPeriods)) 
-                / (Math.Pow(1 + this.PeriodRate, this.NumPeriods) - 1);
+            return Math.Round(principal
+                * (this.PeriodRate * Math.Pow(1 + this.PeriodRate, numPeriods)) 
+                / (Math.Pow(1 + this.PeriodRate, this.NumPeriods) - 1), 3, MidpointRounding.ToEven);
         }
 
         /// <summary>
@@ -105,12 +123,12 @@ namespace DelayShot
         /// <returns></returns>
         private double GetRemainingLoanBalance(int cMonth)
         {
-            return this.Principal * (Math.Pow(1 + this.PeriodRate, this.NumPeriods) - Math.Pow(1 + this.PeriodRate, cMonth)) / (Math.Pow(1 + this.PeriodRate, this.NumPeriods) - 1);
+            return Math.Round(this.Principal * (Math.Pow(1 + this.PeriodRate, this.NumPeriods) - Math.Pow(1 + this.PeriodRate, cMonth)) / (Math.Pow(1 + this.PeriodRate, this.NumPeriods) - 1), 3, MidpointRounding.ToEven);
         }
 
         private double GetInterestForMonth(double balance)
         {
-            return this.PeriodRate * balance;
+            return Math.Round(this.PeriodRate * balance, 3, MidpointRounding.ToEven);
         }
 
         /// <summary>
@@ -121,7 +139,18 @@ namespace DelayShot
         /// <returns></returns>
         private double GetTotalRemainingInterest(double balance, int rMonth)
         {
-            return this.Rate * balance / (1 - (1 / Math.Pow(1 + this.Rate, rMonth)));
+            double sum = 0;
+            for (int i = 0; i < rMonth; i++)
+            {
+                sum += this.GetInterestForMonth(balance);
+
+            }
+            double interest = this.GetInterestForMonth(this.Balance);
+            this.TotalInterestPaid += interest;
+            double principalPaid = Math.Round(this.ComputedPeriodicPayment - interest, 3, MidpointRounding.ToEven);
+            Payment payment = new Payment(principalPaid, interest);
+            this.Balance = Math.Round(this.Balance - principalPaid, 3, MidpointRounding.ToEven);
+            payment.TotalInterestPaid = this.TotalInterestPaid;
         }
     }
 
@@ -129,8 +158,9 @@ namespace DelayShot
     {
         public double PrincipalPaid { get; set; }
         public double InterestPaid { get; set; }
-        public double TotalSinglePayment { get { return this.PrincipalPaid + this.InterestPaid; } }        
-
+        public double TotalSinglePayment { get { return this.PrincipalPaid + this.InterestPaid; } }
+        public double InterestRemainingAfterPayment { get; set; }
+        public double TotalInterestPaid { get; set; }
         public Payment(double principalPaid, double interestPaid)
         {
             this.PrincipalPaid = principalPaid;
