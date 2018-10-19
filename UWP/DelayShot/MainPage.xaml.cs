@@ -8,6 +8,7 @@ namespace DelayShot
 {
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using Windows.UI.Xaml;
     using Windows.UI.Xaml.Controls;
     using Windows.UI.Xaml.Navigation;
 
@@ -51,8 +52,10 @@ namespace DelayShot
 
         private void AddNewLoan_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            LoanItem ln = App.Processor.AddNewLoan(rate, nMonth, principal);
-            this.Loans.Add(ln);
+            Frame rootFrame = Window.Current.Content as Frame;
+            rootFrame.Navigate(typeof(AddLoan));
+            //LoanItem ln = App.Processor.AddNewLoan(rate, nMonth, principal);
+            //this.Loans.Add(ln);
         }
 
         private void LoansListView_ItemClick(object sender, ItemClickEventArgs e)

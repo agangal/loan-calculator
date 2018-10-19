@@ -7,8 +7,14 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="#1DE9B6">
-
-    <Grid>
+    <Page.Resources>
+        <Style x:Name="NameStyle" TargetType="TextBlock">
+            <Setter Property="Margin" Value="5"></Setter>
+            <Setter Property="Foreground" Value="White"></Setter>
+        </Style>
+    </Page.Resources>
+    
+    <Grid Margin="15">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -20,19 +26,20 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
-        <TextBlock Text="Mortgage Amount"></TextBlock>
-        <Grid Grid.Row="1">
+        <TextBlock Text="Mortgage Amount" Style="{StaticResource NameStyle}"></TextBlock>
+        <Grid Grid.Row="1" Background="White" BorderBrush="Gray" BorderThickness="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="$"></TextBlock>
-            <TextBox Grid.Column="1"></TextBox>
-            <TextBlock Text="X" Grid.Column="2"></TextBlock>
+            <TextBlock Text="$" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Center" IsTextSelectionEnabled="False" SelectionHighlightColor="Transparent" Margin="5"></TextBlock>
+            <TextBox Grid.Column="1" BorderBrush="Transparent"></TextBox>
+            <TextBlock Text="&#xE106;" FontFamily="Segoe MDL2 Assets" SelectionHighlightColor="Transparent"
+                       Grid.Column="2" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5"></TextBlock>
         </Grid>
 
-        <TextBlock Text="Mortgage term in years" Grid.Row="2"></TextBlock>
+        <TextBlock Text="Mortgage term in years" Grid.Row="2" Style="{StaticResource NameStyle}"></TextBlock>
         <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -43,9 +50,9 @@
             <TextBlock Text="X" Grid.Column="2"></TextBlock>
         </Grid>
 
-        <TextBlock Text="Or" Grid.Row="4"></TextBlock>
-        
-        <TextBlock Text="Term in months" Grid.Row="5"></TextBlock>
+        <TextBlock Text="Or" Grid.Row="4" Style="{StaticResource NameStyle}"></TextBlock>
+
+        <TextBlock Text="Term in months" Grid.Row="5" Style="{StaticResource NameStyle}"></TextBlock>
         <Grid Grid.Row="6">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -56,8 +63,8 @@
             <TextBlock Text="X" Grid.Column="2"></TextBlock>
         </Grid>
 
-        <TextBlock Text="Mortgage Amount"></TextBlock>
-        <Grid Grid.Row="1">
+        <TextBlock Text="Interest Rate Per Year" Grid.Row="7" Style="{StaticResource NameStyle}"></TextBlock>
+        <Grid Grid.Row="8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
