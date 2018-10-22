@@ -38,6 +38,7 @@ public class Loan {
         payment.InterestRemainingAfterPayment = this.GetTotalRemainingInterest(this.Balance, this.NumPeriods - currPeriodNum);
         this.TotalRemainingInterest = payment.InterestRemainingAfterPayment;
         payment.TotalInterestPaid = this.TotalInterestPaid;
+        payment.SetTotalSinglePayment();
         Payments.add(payment);
     }
 
@@ -52,6 +53,7 @@ public class Loan {
             this.Balance = Math.round(this.Balance - principalPaid);
             payment.TotalInterestPaid = this.TotalInterestPaid;
             payment.InterestRemainingAfterPayment = this.GetTotalRemainingInterest(this.Balance, this.NumPeriods - i - 1);
+            payment.SetTotalSinglePayment();
             this.Payments.add(payment);
             if (this.Balance < 1)
             {
@@ -79,16 +81,6 @@ public class Loan {
                 * (this.PeriodRate * Math.pow(1 + this.PeriodRate, numPeriods))
                 / (Math.pow(1 + this.PeriodRate, this.NumPeriods) - 1));
     }
-
-    ///// <summary>
-    /////
-    ///// </summary>
-    ///// <param name="cMonth">Completed Period Num (starting from 0)</param>
-    ///// <returns></returns>
-    //private double GetRemainingLoanBalance(int cPeriod)
-    //{
-    //    return Math.Round(this.Principal * (Math.Pow(1 + this.PeriodRate, this.NumPeriods) - Math.Pow(1 + this.PeriodRate, cPeriod)) / (Math.Pow(1 + this.PeriodRate, this.NumPeriods) - 1), 3, MidpointRounding.ToEven);
-    //}
 
     private double GetInterestForMonth(double balance)
     {
