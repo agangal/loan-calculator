@@ -9,8 +9,27 @@
     Background="#1DE9B6">
     <Page.Resources>
         <Style x:Name="NameStyle" TargetType="TextBlock">
+            <Setter Property="Margin" Value="5,15,5,5"></Setter>
+            <Setter Property="FontWeight" Value="SemiBold"></Setter>
+            <Setter Property="CharacterSpacing" Value="50"></Setter>
+            <Setter Property="Foreground" Value="#f4f4f4"></Setter>
+        </Style>
+        <Style x:Name="InputTextBlockStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="Gray"></Setter>
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+            <Setter Property="IsTextSelectionEnabled" Value="False"></Setter>
+            <Setter Property="SelectionHighlightColor" Value="Transparent"></Setter>
             <Setter Property="Margin" Value="5"></Setter>
-            <Setter Property="Foreground" Value="White"></Setter>
+            <Setter Property="MinWidth" Value="10"></Setter>
+        </Style>
+        <Style x:Name="GridStyle" TargetType="Grid">
+            <Setter Property="Background" Value="White"></Setter>
+            <Setter Property="BorderBrush" Value="Gray"></Setter>
+            <Setter Property="BorderThickness" Value="1"></Setter>
+        </Style>
+        <Style x:Name="InputTextBoxStyle" TargetType="TextBox">
+            <Setter Property="BorderBrush" Value="Transparent"></Setter>
         </Style>
     </Page.Resources>
     
@@ -27,52 +46,55 @@
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
         <TextBlock Text="Mortgage Amount" Style="{StaticResource NameStyle}"></TextBlock>
-        <Grid Grid.Row="1" Background="White" BorderBrush="Gray" BorderThickness="1">
+        <Grid Grid.Row="1" Style="{StaticResource GridStyle}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="$" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Center" IsTextSelectionEnabled="False" SelectionHighlightColor="Transparent" Margin="5"></TextBlock>
-            <TextBox Grid.Column="1" BorderBrush="Transparent"></TextBox>
-            <TextBlock Text="&#xE106;" FontFamily="Segoe MDL2 Assets" SelectionHighlightColor="Transparent"
-                       Grid.Column="2" Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5"></TextBlock>
+            <TextBlock Text="$" Style="{StaticResource InputTextBlockStyle}"></TextBlock>
+            <TextBox Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"></TextBox>            
         </Grid>
 
         <TextBlock Text="Mortgage term in years" Grid.Row="2" Style="{StaticResource NameStyle}"></TextBlock>
-        <Grid Grid.Row="3">
+        <Grid Grid.Row="3" Style="{StaticResource GridStyle}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
-            </Grid.ColumnDefinitions>            
-            <TextBox Grid.Column="1"></TextBox>
-            <TextBlock Text="X" Grid.Column="2"></TextBlock>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Style="{StaticResource InputTextBlockStyle}"></TextBlock>
+            <TextBox Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"></TextBox>
         </Grid>
 
         <TextBlock Text="Or" Grid.Row="4" Style="{StaticResource NameStyle}"></TextBlock>
 
         <TextBlock Text="Term in months" Grid.Row="5" Style="{StaticResource NameStyle}"></TextBlock>
-        <Grid Grid.Row="6">
+        <Grid Grid.Row="6" Style="{StaticResource GridStyle}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <TextBox Grid.Column="1"></TextBox>
-            <TextBlock Text="X" Grid.Column="2"></TextBlock>
+            <TextBlock Grid.Column="0" Style="{StaticResource InputTextBlockStyle}"></TextBlock>
+            <TextBox Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"></TextBox>
         </Grid>
 
         <TextBlock Text="Interest Rate Per Year" Grid.Row="7" Style="{StaticResource NameStyle}"></TextBlock>
         <Grid Grid.Row="8">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="$"></TextBlock>
-            <TextBox Grid.Column="1"></TextBox>
-            <TextBlock Text="X" Grid.Column="2"></TextBlock>
+            <Grid Style="{StaticResource GridStyle}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="1" Style="{StaticResource InputTextBoxStyle}"></TextBox>
+                <TextBlock Text="%" Grid.Column="2" Style="{StaticResource InputTextBlockStyle}"></TextBlock>
+            </Grid>
+            <Button Grid.Column="1" Margin="20,0,20,0" Content="CALCULATE" Foreground="#f4f4f4" Click="Button_Click"
+                    Background="#303032" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></Button>
         </Grid>
+        
     </Grid>
 </Page>
