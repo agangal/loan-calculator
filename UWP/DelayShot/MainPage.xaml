@@ -13,7 +13,6 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <Button x:Name="AddNewLoan"
@@ -23,14 +22,8 @@
                     Content="Add"
                     Foreground="White"
                     Click="AddNewLoan_Click"></Button>
-        </Grid>
-        <StackPanel Grid.Row="1" Visibility="Visible" x:Name="AddLoanGrid">
-            <TextBlock Text="Principal"></TextBlock>
-            <TextBox></TextBox>
-            <TextBlock Text="APR"></TextBlock>
-            <TextBox></TextBox>
-        </StackPanel>
-        <Grid Grid.Row="2" Visibility="Collapsed" x:Name="LoanListGrid">
+        </Grid>       
+        <Grid Grid.Row="2" Visibility="Visible" x:Name="LoanListGrid">
             <ListView x:Name="LoansListView"
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Stretch"

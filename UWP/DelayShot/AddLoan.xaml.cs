@@ -13,8 +13,6 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
-
 namespace DelayShot
 {
     /// <summary>
@@ -29,7 +27,17 @@ namespace DelayShot
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            if (!double.TryParse(PrinicipalTextBox.Text, out double principal))
+                return;
 
+            if (!int.TryParse(TermInMonthsTextBox.Text, out int months))
+                return;
+
+            if (!double.TryParse(RateTextBox.Text, out double rate))
+                return;
+
+            App.Processor.AddNewLoan(rate, months, principal);
+            this.Frame.GoBack();
         }
     }
 }
