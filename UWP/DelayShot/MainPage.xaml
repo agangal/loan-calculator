@@ -23,16 +23,50 @@
                     Foreground="White"
                     Click="AddNewLoan_Click"></Button>
         </Grid>       
-        <Grid Grid.Row="2" Visibility="Visible" x:Name="LoanListGrid">
+        <Grid Grid.Row="2" Visibility="Visible" x:Name="LoanListGrid">            
             <ListView x:Name="LoansListView"
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Stretch"
                       IsItemClickEnabled="True"
                       ItemsSource="{x:Bind Loans}"
                       ItemClick="LoansListView_ItemClick">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+                        <Setter Property="Background" Value="#303032"></Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="data:LoanItem">
-                        <TextBlock Text="{x:Bind Id}"></TextBlock>
+                        <Grid Background="#303032" HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Orientation="Vertical" Grid.Column="0" Margin="5">                                
+                                <TextBlock Text="{x:Bind Real.Principal}" FontSize="26" HorizontalAlignment="Center" Foreground="#f4f4f4"></TextBlock>
+                                <TextBlock Text="Mortgage Amount" HorizontalAlignment="Center" 
+                                           FontWeight="SemiBold" FontSize="12" Foreground="#f4f4f4"
+                                           CharacterSpacing="30"></TextBlock>
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical" Grid.Column="1" Margin="5">                                
+                                <TextBlock Text="{x:Bind Real.ComputedPeriodicPayment}" FontSize="26" HorizontalAlignment="Center" Foreground="#f4f4f4"></TextBlock>
+                                <TextBlock Text="Monthly Payment" HorizontalAlignment="Center" 
+                                           FontWeight="SemiBold" FontSize="12" Foreground="#f4f4f4"
+                                           CharacterSpacing="30"></TextBlock>
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical" Grid.Column="2" Margin="5">                                
+                                <TextBlock Text="{x:Bind Real.SavingsOnInterest}" FontSize="26" HorizontalAlignment="Center" Foreground="#f4f4f4"></TextBlock>
+                                <TextBlock Text="Interest Savings" HorizontalAlignment="Center" 
+                                           FontWeight="SemiBold" FontSize="12" Foreground="#f4f4f4"
+                                           CharacterSpacing="30"></TextBlock>
+                            </StackPanel>
+                            <TextBlock Text="&#xE013;" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20"
+                                       FontFamily="Segoe MDL2 Assets" Foreground="#f4f4f4" Grid.Column="4"></TextBlock>
+                        </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

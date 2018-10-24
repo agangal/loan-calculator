@@ -27,18 +27,11 @@ namespace DelayShot
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {           
             base.OnNavigatedTo(e);
-            if (App.Processor.Items.Count == 0)
+            this.Loans.Clear();
+            foreach (var item in App.Processor.Items)
             {
-                this.GoToAddNewLoan();
-            }
-            else
-            {
-                this.Loans.Clear();
-                foreach(var item in App.Processor.Items)
-                {
-                    this.Loans.Add(item);
-                }
-            }           
+                this.Loans.Add(item);
+            }            
         }
 
         private void AddNewLoan_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
