@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace DelayShot
 {
+    using WinRTXamlToolkit.Controls.DataVisualization.Charting;
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
@@ -25,6 +26,7 @@ namespace DelayShot
         public ViewLoan()
         {
             this.InitializeComponent();
+           
         }
     }
 }
