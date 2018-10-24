@@ -41,6 +41,7 @@ namespace DelayShot
 
         private void LoansListView_ItemClick(object sender, ItemClickEventArgs e)
         {
+            LoanItem item = e.ClickedItem as LoanItem;
 
         }
 

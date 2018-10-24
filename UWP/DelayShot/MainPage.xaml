@@ -34,11 +34,12 @@
                     <Style TargetType="ListViewItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
                         <Setter Property="Background" Value="#303032"></Setter>
+                        <Setter Property="Margin" Value="5"></Setter>
                     </Style>
                 </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="data:LoanItem">
-                        <Grid Background="#303032" HorizontalAlignment="Stretch">
+                        <Grid Background="#303032" HorizontalAlignment="Stretch" Margin="5">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"></ColumnDefinition>
                                 <ColumnDefinition Width="*"></ColumnDefinition>
