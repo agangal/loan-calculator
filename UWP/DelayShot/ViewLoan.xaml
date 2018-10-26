@@ -12,9 +12,30 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="0.2*"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.5*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="3.59%"></TextBlock>
+                <TextBlock Text="20 Months"></TextBlock>
+                <TextBlock Text="19976"></TextBlock>
+            </StackPanel>
+        </Grid>
         <Grid Grid.Row="1">
             <ListView></ListView>
         </Grid>
+        <Grid Grid.Row="2">
+            <Button Height="45" x:Name="AddNewPayment" Background="#303032" 
+                    Foreground="#f4f4f4" FontSize="18"
+                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <TextBlock Text="Record New Payment" FontWeight="SemiBold"
+                          CharacterSpacing="40"></TextBlock>
+            </Button>
+        </Grid>
+        
     </Grid>
 </Page>
